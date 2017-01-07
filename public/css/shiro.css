@@ -1,0 +1,110 @@
+.box-t {
+	display: block;
+	position: relative;
+	-webkit-box-shadow: 0px 3px 8px 0px rgba(0,0,0,0.1);
+	padding-top: 10px;
+	padding-bottom: 30px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+}
+
+.box-sidebar {
+	background-color: white;
+	position: fixed;
+	padding-bottom: 20px;
+}
+
+.box-r {
+	background-color: white;
+	text-align: center;
+}
+
+.item {
+	margin-bottom: 20px;
+	background-color: white;
+}
+
+.resume {
+	background-color: white;
+	text-align: center;
+}
+
+.resume span {
+	font-size: 50px;
+	padding-bottom: 15px;
+}
+
+.resume-stats {
+	margin-top: 20px;
+	font-size: 30px;
+}
+
+.contract {
+	background-color: white;
+	margin-bottom: 20px;
+	padding-bottom: 0px;
+}
+
+.contract .progress {
+
+}
+
+.button-detail {
+	margin-top: 20px;
+}
+
+.navbar-spacer {
+	margin-bottom: 70px;
+}
+
+/*
+body {
+	background-repeat: repeat;
+	background-position: top left;
+	background-attachment: fixed;
+	background-image: url('../img/bg.gif');
+}
+*/
+
+body {
+	background-color: #2b2b2b;
+
+}
+
+h2 {
+	color: white;
+	text-align: center;
+}
+
+form {
+
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+	padding: 5px;
+	text-align: center;
+
+	margin: 20px;
+}
+
+#txt {
+	margin-bottom: 30px;
+}
+
+textarea {
+	height: 150px;
+}
+
+td input {
+	width: 80%;
+}
+
+
+
+
+
+
+
+
