@@ -2,93 +2,82 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Producer;
 
-use Illuminate\Routing\Redirector;
 use Illuminate\Http\Request;
 use App\Models\Contract;
 use App\Models\Ship;
 
-use Cart;
-use View;
-
 class MainController extends Controller
 {
     /**
-     * 
-     *
-     * @return Response
+     * @param Request $request
+     * @return \Illuminate\View\View
      */
     public function redirectToMain(Request $request)
     {
         $contracts = Contract::all();
 
         if ($request->session()->get('user_id') != null) {
-            return View::make('pages.index')->with('request', $request)->with('contracts', $contracts);
+            return view('pages.index')->with('request', $request)
+                ->with('contracts', $contracts);
         }
-        else {
-            return View::make('tests.index')->with('request', $request);
-        }
-        
+
+        return redirect('/');
     }
 
     /**
-     * 
-     *
-     * @return Response
+     * @return \Illuminate\View\View
      */
     public function redirectToShips()
     {
-        if ($request->session()->get('user_id') != null) {
-            return View::get('ships');
+        if (request()->session()->get('user_id') != null) {
+            return view('ships');
         }
-        else {
-            return View::make('tests.index')->with('request', $request);
-        }
+
+        return redirect('/');
     }
 
     /**
-     * 
-     *
-     * @return Response
+     * @param Request $request
+     * @return \Illuminate\View\View
      */
     public function redirectToMinerals(Request $request)
     {
         if ($request->session()->get('user_id') != null) {
-            return View::make('pages.rachat')->with('request', $request);
+            return view('pages.rachat')->with('request', $request);
         }
-        else {
-            return View::make('tests.index')->with('request', $request);
-        }
+
+        return redirect('/');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     public function backEndAccess(Request $request)
     {
         $producers = Producer::all();
 
-        if ($request->session()->get('user_id') != null) {
+        if (auth()->user()->id != null) {
             foreach($producers as $key => $value) {
-                if ($value->character_id == $request->session()->get('user_id')) {
+                if ($value->character_id == auth()->user()->id) {
                     $contracts = Contract::all();
 
-                    return View::make('backend.index')->with('request', $request)->with('contracts', $contracts);
+                    return view('backend.index')->with('request', $request)
+                        ->with('contracts', $contracts);
                 }
 
-                else {
-                    return View::make('pages.error')->with('request', $request);
-                }
+                return view('pages.error')->with('request', $request);
             }
         }
-        else {
-            return View::make('tests.index')->with('request', $request);
-        }
+
+        return redirect('/');
     }
 
     /**
-     * 
-     *
-     * @return Response
+     * @param Request $request
+     * @return \Illuminate\View\View
      */
     public function redirectToPrices(Request $request)
     {
@@ -99,24 +88,15 @@ class MainController extends Controller
                 if ($value->character_id == $request->session()->get('user_id')) {
                     $ships = Ship::all();
 
-                    return View::make('pages.prices')->with('request', $request)->with('ships', $ships);
+                    return view('pages.prices')->with('request', $request)
+                        ->with('ships', $ships);
                 }
 
-                else {
-                    return View::make('pages.error')->with('request', $request);
-                }
+                return view('pages.error')->with('request', $request);
             }
         }
-        else {
-            return View::make('tests.index')->with('request', $request);
-        }
-        
+
+        return redirect('/');
     }
 
 }
-
-
-
-
-
-

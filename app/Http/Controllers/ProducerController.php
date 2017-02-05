@@ -2,15 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-
-use Illuminate\Routing\Redirector;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 use App\Models\Producer;
-
-use View;
 
 class ProducerController extends Controller
 {
@@ -27,7 +21,8 @@ class ProducerController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\View\View
      */
     public function create(Request $request)
     {
@@ -37,16 +32,12 @@ class ProducerController extends Controller
             foreach($producers as $key => $value) {
                 if ($value->character_id == $request->session()->get('user_id')) {
 
-                    return View::make('producers.create')->with('request', $request)->with('producers', $producers);
+                    return view('producers.create')->with('request', $request)
+                        ->with('producers', $producers);
                 }
 
-                else {
-                    return View::make('pages.error')->with('request', $request);
-                }
+                return view('pages.error')->with('request', $request);
             }
-        }
-        else {
-            return View::make('tests.index')->with('request', $request);
         }
     }
 
@@ -65,10 +56,10 @@ class ProducerController extends Controller
         ]);
 
         // store
-        $producer = new Producer;
-        $producer->character_name       = $request->input('character_name');
-        $producer->character_id      = $request->input('character_id');
-        $producer->save();
+        Producer::create([
+            'character_id' => $request->input('character_id'),
+            'character_name' => $request->input('character_name')
+        ]);
 
         // redirect
         $request->session()->flash('message', 'Producer successfully added!');
@@ -113,14 +104,14 @@ class ProducerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param Request $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $id)
     {
         // delete
-        $producer = Producer::find($id);
-        $producer->delete();
+        Producer::destroy($id);
 
         // redirect
         $request->session()->flash('message', 'Producer successfully removed!');

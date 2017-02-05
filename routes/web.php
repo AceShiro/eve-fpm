@@ -15,26 +15,60 @@ Route::get('/', function () {
     return view('pages.login');
 });
 
-Route::get('main', 'MainController@redirectToMain')->name('main');
+Route::group(['prefix' => 'auth'], function(){
+    Route::get('eve', 'Auth\AuthController@redirectToProvider');
+    Route::get('eve/callback', 'Auth\AuthController@handleProviderCallback');
 
-Route::get('minerals', 'MainController@redirectToMinerals')->name('minerals');
-
-Route::get('purchase', function () {
-    return view('pages.purchase');
+    Route::get('eve/session', [
+        'as' => 'session',
+        'uses' => 'Auth\AuthController@startSession'
+    ]);
 });
 
-Route::get('prices', 'MainController@redirectToPrices')->name('prices');
+Route::group([
+    'middleware' => 'auth'
+], function(){
+    Route::get('main', [
+        'as' => 'main',
+        'middleware' => 'auth',
+        'uses' => 'MainController@redirectToMain'
+    ]);
 
-Route::resource('ships', 'ShipController');
-Route::resource('contracts', 'ContractController');
-Route::resource('producers', 'ProducerController');
+    Route::get('minerals', [
+        'as' => 'minerals',
+        'middleware' => 'auth',
+        'uses' => 'MainController@redirectToMinerals'
+    ]);
 
-Route::get('auth/eve', 'Auth\AuthController@redirectToProvider');
-Route::get('auth/eve/callback', 'Auth\AuthController@handleProviderCallback');
+    Route::get('purchase', function () {
+        return view('pages.purchase');
+    });
 
-Route::get('auth/eve/session', 'Auth\AuthController@startSession')->name('session');
+    Route::get('prices', [
+        'as' => 'prices',
+        'middleware' => 'auth',
+        'uses' => 'MainController@redirectToPrices'
+    ]);
 
-Route::post('cart', 'CartController@addToContractDatabase')->name('cart');
-Route::post('testcart', 'CartController@testCart')->name('testcart');
+    Route::resource('ships', 'ShipController');
+    Route::resource('contracts', 'ContractController');
+    Route::resource('producers', 'ProducerController');
 
-Route::get('backend', 'MainController@backEndAccess')->name('backend');
+    Route::post('cart', [
+        'as' => 'cart',
+        'middleware' => 'auth',
+        'uses' => 'CartController@addToContractDatabase'
+    ]);
+
+    Route::post('testcart', [
+        'as' => 'testcart',
+        'middleware' => 'auth',
+        'uses' => 'CartController@testCart'
+    ]);
+
+    Route::get('backend', [
+        'as' => 'backend',
+        'middleware' => 'auth',
+        'uses' => 'MainController@backEndAccess'
+    ]);
+});
