@@ -3,18 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Routing\Redirector;
 use Illuminate\Http\Request;
-use Cart;
-use Socialite;
-use View;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
     /**
      * Redirect the user to the Eve Online authentication page.
      *
-     * @return Response
+     * @return \Illuminate\View\View
      */
     public function redirectToProvider()
     {
@@ -24,7 +21,8 @@ class AuthController extends Controller
     /**
      * Obtain the user information from Eve Online.
      *
-     * @return Response
+     * @param Request $request
+     * @return \Illuminate\View\View
      */
     public function handleProviderCallback(Request $request)
     {
@@ -45,7 +43,5 @@ class AuthController extends Controller
 
 
         return redirect()->route('main');
-
-        //dd($user);
     }
 }

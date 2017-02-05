@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Routing\Redirector;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 use App\Models\Producer;
@@ -43,31 +40,24 @@ class ContractController extends Controller
      */
     public function store(Request $request)
     {
-        $content = $_POST;
-
-        $contract = new Contract;
-
-        for($i=1; $i < $content['itemCount'] + 1; $i++) {
+        for($i=1; $i < $request->input('itemCount') + 1; $i++) {
             $item = 'item_name_'.$i;
             $quantity =  'item_quantity_'.$i;
             $price = 'item_price_'.$i;
 
-            $contract->user_id = $request->session()->get('user_id');
-            $contract->character_name = $request->session()->get('name');
-            $contract->avatar = $request->session()->get('avatar');
-
-            $contract->item = $content[$item];
-            $contract->quantity = $content[$quantity];
-            $contract->price = $content[$price] * $content[$quantity];
-
-            $contract->status = 'Waiting';
-
-            $contract->save();
-
+            Contract::create([
+                'user_id' => session()->get('user_id'),
+                'character_name' => session()->get('name'),
+                'avatar' => session()->get('avatar'),
+                'item' => $request->input($item),
+                'quantity' => $request->input($quantity),
+                'price' => $request->input($price) * $request->input($quantity),
+                'status' => 'Waiting'
+            ]);
         }
 
         $request->session()->flash('message', 'Successfully handled your command! A EvE-Mail will be send to you when we will start the production.');
-        return View::make('pages.purchase')->with('request', $request);
+        return view('pages.purchase')->with('request', $request);
     }
 
     /**
@@ -84,6 +74,7 @@ class ContractController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
+     * @param Request $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -99,14 +90,9 @@ class ContractController extends Controller
                     return view('contracts.edit')->with('contract', $contract)->with('request', $request);
                 }
 
-                else {
-                    return View::make('pages.error')->with('request', $request);
-                }
+                return view('pages.error')->with('request', $request);
             }
         }
-        else {
-            return View::make('tests.index')->with('request', $request);
-        } 
     }
 
     /**
@@ -124,9 +110,9 @@ class ContractController extends Controller
         ]);
 
         // store
-        $contract = Contract::find($id);
-        $contract->status       = $request->input('status');
-        $contract->save();
+        Contract::find($id)->update([
+            'status' => $request->input('status')
+        ]);
 
         // redirect
         $request->session()->flash('message', 'Producer successfully added!');
@@ -136,14 +122,14 @@ class ContractController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param Request $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $id)
     {
         // delete
-        $contract = Contract::find($id);
-        $contract->delete();
+        Contract::destroy($id);
 
         // redirect
         $request->session()->flash('message', 'Producer successfully removed!');
